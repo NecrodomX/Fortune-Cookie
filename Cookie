@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fortune Cookie</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f7e7c6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  h1 {
+    margin-bottom: 20px;
+  }
+
+  .cookie {
+    width: 160px;
+    height: 110px;
+    background: #d8a45d;
+    border-radius: 50% 50% 45% 45%;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  /* Crack line */
+  .cookie::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    width: 80%;
+    height: 2px;
+    background: #8b5a2b;
+    opacity: 0;
+    transform: scaleX(0);
+    transition: all 0.4s ease;
+  }
+
+  /* OPEN STATE */
+  .cookie.open {
+    animation: crack 0.6s forwards;
+  }
+
+  .cookie.open::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  @keyframes crack {
+    0% { transform: scale(1) rotate(0); }
+    40% { transform: scale(1.1) rotate(-5deg); }
+    60% { transform: scale(1.1) rotate(5deg); }
+    100% { transform: scale(0.9) rotate(0); }
+  }
+
+  .fortune {
+    margin-top: 30px;
+    padding: 15px 20px;
+    background: white;
+    border-radius: 8px;
+    display: none;
+    max-width: 320px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  .fortune.show {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+
+<body>
+
+<h1>🥠 Fortune Cookie</h1>
+
+<div class="cookie" id="cookie"></div>
+
+<div class="fortune" id="fortune"></div>
+
+<!-- Sound -->
+<audio id="crackSound" preload="auto">
+  <source src="https://www.soundjay.com/human/sounds/bite-crunch-01.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  const fortunes = {
+    good: [
+      "You will have a great day.",
+      "Success is coming your way.",
+      "A pleasant surprise awaits you.",
+      "You will achieve something important soon."
+    ],
+    neutral: [
+      "Today will be... a day.",
+      "Things may stay exactly the same.",
+      "You will eat something today.",
+      "Nothing unexpected will happen."
+    ],
+    bad: [
+      "You may stub your toe soon.",
+      "Plans might not go as expected.",
+      "Be cautious today.",
+      "Something minor will annoy you."
+    ]
+  };
+
+  function getRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function generateFortune() {
+    const types = ["good", "neutral", "bad"];
+    const type = getRandom(types);
+    return getRandom(fortunes[type]);
+  }
+
+  const cookie = document.getElementById("cookie");
+  const fortuneBox = document.getElementById("fortune");
+  const sound = document.getElementById("crackSound");
+
+  const fortuneText = generateFortune();
+  fortuneBox.textContent = fortuneText;
+
+  cookie.addEventListener("click", () => {
+    cookie.classList.add("open");
+    fortuneBox.classList.add("show");
+    sound.currentTime = 0;
+    sound.play();
+  });
+</script>
+
+</body>
+</html>
